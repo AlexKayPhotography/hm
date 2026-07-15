@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VivatBet Telegram Mini App Landing</title>
+  <style>
+    :root {
+      --bg: #080b14;
+      --panel: #101628;
+      --card: #121b31;
+      --primary: #16e27b;
+      --primary-2: #00c767;
+      --accent: #ffc83d;
+      --text: #f5f8ff;
+      --muted: #97a4c2;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(22,226,123,0.18), transparent 35%),
+        radial-gradient(circle at 80% 100%, rgba(0,199,103,0.16), transparent 40%),
+        var(--bg);
+      overflow-x: hidden;
+    }
+
+    .section {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 7vh 6vw;
+      position: relative;
+    }
+
+    .container {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .hero-pin {
+      height: 320vh; /* long scroll area for merge animation */
+      position: relative;
+    }
+
+    .hero-sticky {
+      position: sticky;
+      top: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: visible;
+    }
+
+    .grid-3 {
+      width: min(900px, 100%);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      perspective: 1000px;
+      position: relative;
+    }
+
+    .box {
+      background: linear-gradient(145deg, rgba(11,85,78,.52), rgba(9,58,63,.72));
+      border: 1px solid rgba(130,193,184,.22);
+      border-radius: 18px;
+      min-height: 300px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: visible;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.03), 0 20px 45px rgba(0,0,0,0.35);
+    }
+
+    .box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(22,226,123,.18), transparent 50%);
+      pointer-events: none;
+    }
+
+    .ball {
+      width: 124px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background-image: url('https://vivatbet-ireland.com/wp-content/uploads/2026/05/football.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,.35));
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: transform .2s linear, opacity .2s linear;
+      z-index: 2;
+    }
+
+    
+
+    .boot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 260px;
+      height: 120px;
+      background-image: url('https://vivatbet-ireland.com/wp-content/uploads/2026/05/football-boots.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: drop-shadow(0 18px 28px rgba(0,0,0,.35));
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6) rotate(-8deg);
+      transition: opacity .35s linear, transform .35s linear;
+      z-index: 1;
+    }
+
+    .hero-title {
+      position: absolute;
+      top: 7%;
+      text-align: center;
+      width: 100%;
+      padding-inline: 20px;
+    }
+
+    .hero-title h1 {
+      font-size: clamp(1.8rem, 4.2vw, 3.6rem);
+      line-height: 1.06;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .hero-title p {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: clamp(.95rem, 1.7vw, 1.15rem);
+    }
+
+    .win-card {
+      text-align: center;
+      background: linear-gradient(160deg, rgba(22,226,123,.16), rgba(8,11,20,.65));
+      border: 1px solid rgba(22,226,123,.4);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 16px 35px rgba(0,0,0,.35);
+      max-width: 760px;
+    }
+
+    .win-card h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); }
+    .win-card .amount {
+      color: var(--accent);
+      font-weight: 800;
+      margin-top: 10px;
+      display: block;
+      font-size: clamp(2.2rem, 7vw, 4.2rem);
+    }
+
+    .phone-wrap {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .phone {
+      width: min(280px, 76vw);
+      aspect-ratio: 9/18;
+      border-radius: 32px;
+      background: linear-gradient(180deg, #1a233f, #090d1b 70%);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 24px 40px rgba(0,0,0,.4);
+      padding: 12px;
+      opacity: 0;
+      transform: translateY(80px) scale(.9);
+      transition: 700ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .phone .screen {
+      height: 100%;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(22,226,123,.22), transparent 30%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.06), rgba(255,255,255,.06) 1px, transparent 1px, transparent 22px),
+        #0e1428;
+      border: 1px solid rgba(255,255,255,.09);
+      padding: 14px;
+      color: #dbe6ff;
+      font-size: .9rem;
+    }
+
+    .phone.in-view {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .steps {
+      display: grid;
+      gap: 14px;
+      width: min(800px, 100%);
+    }
+
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 14px;
+      padding: 18px 16px;
+    }
+
+    .step h3 { font-size: 1.05rem; margin-bottom: 6px; }
+    .step p { color: var(--muted); line-height: 1.45; }
+
+    
+    .confetti-cannon {
+      position: fixed;
+      top: 18%;
+      width: 56px;
+      height: 140px;
+      border-radius: 20px;
+      background: linear-gradient(180deg,#23365f,#111a31);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 10px 20px rgba(0,0,0,.35);
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .confetti-cannon::after {
+      content:"";
+      position:absolute;
+      top:-14px; left:8px; right:8px;
+      height: 22px;
+      border-radius: 12px 12px 6px 6px;
+      background: linear-gradient(180deg,#ffd66b,#ffb520);
+    }
+    .confetti-cannon.left { left: 18px; transform: rotate(-25deg); }
+    .confetti-cannon.right { right: 18px; transform: rotate(25deg); }
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 16px;
+      opacity: 0;
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    @media (max-width: 850px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      .box { min-height: 180px; }
+      .hero-pin { height: 270vh; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero-pin">
+    <div class="hero-sticky" id="heroSticky">
+      <div class="hero-title">
+        <h1>VivatBet Telegram Mini App</h1>
+        <p>Scroll to watch the action: football energy turns into your winning boot.</p>
+      </div>
+
+      <div class="grid-3" id="grid3">
+        <div class="box" id="box1"><div class="ball left" id="ballLeft"></div></div>
+        <div class="box" id="box2"><div class="boot" id="boot"></div></div>
+        <div class="box" id="box3"><div class="ball right" id="ballRight"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="confetti-cannon left" id="cannonLeft"></div>
+  <div class="confetti-cannon right" id="cannonRight"></div>
+
+  <section class="section" id="winSection">
+    <div class="container win-card">
+      <h2>Congratulations!</h2>
+      <span class="amount">You won a €10 Free Bet</span>
+    </div>
+  </section>
+
+  <section class="section" id="phonesSection">
+    <div class="container">
+      <div class="phone-wrap">
+        <div class="phone" id="phoneA">
+          <div class="screen">
+            <strong>Live Odds</strong><br><br>
+            • Match Boost: 2.10<br>
+            • In-play combo builder<br>
+            • Quick wallet access
+          </div>
+        </div>
+        <div class="phone" id="phoneB">
+          <div class="screen">
+            <strong>Mini App Tickets</strong><br><br>
+            • One-tap betting slips<br>
+            • Promo missions tracker<br>
+            • Instant payout status
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container steps">
+      <div class="step"><h3>Step 1 — Open the Bot</h3><p>Launch our Telegram mini app from the link and connect your profile to get started in seconds.</p></div>
+      <div class="step"><h3>Step 2 — Pick Your Match</h3><p>Browse trending fixtures, compare odds, and build your preferred ticket right in the app.</p></div>
+      <div class="step"><h3>Step 3 — Claim Promotions</h3><p>Use missions and special offers to unlock bonuses and extra free bet opportunities every week.</p></div>
+      <div class="step"><h3>Step 4 — Track & Cash Out</h3><p>Follow your active bets live and use quick cash-out options when the timing is right.</p></div>
+    </div>
+  </section>
+
+  <script>
+    const heroPin = document.querySelector('.hero-pin');
+    const left = document.getElementById('ballLeft');
+    const right = document.getElementById('ballRight');
+    const boot = document.getElementById('boot');
+    const cannonLeft = document.getElementById('cannonLeft');
+    const cannonRight = document.getElementById('cannonRight');
+    const winSection = document.getElementById('winSection');
+    let confettiFired = false;
+
+    function updateHero() {
+      const rect = heroPin.getBoundingClientRect();
+      const total = heroPin.offsetHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(-rect.top, 0), total);
+      const progress = total ? scrolled / total : 0;
+
+      const mergeStart = 0.12;
+      const mergeEnd = 0.67;
+      const t = Math.min(Math.max((progress - mergeStart) / (mergeEnd - mergeStart), 0), 1);
+
+      const x = 240 * t;
+      const overlapStart = 0.72;
+      const overlapEnd = 0.9;
+      const blend = Math.min(Math.max((t - overlapStart) / (overlapEnd - overlapStart), 0), 1);
+      const flip = blend * 180;
+
+      left.style.transform = `translate(calc(-50% + ${x}px), -50%) rotateY(${flip}deg)`;
+      right.style.transform = `translate(calc(-50% - ${x}px), -50%) rotateY(${-flip}deg)`;
+      left.style.opacity = String(1 - blend);
+      right.style.opacity = String(1 - blend);
+
+      boot.style.opacity = String(blend);
+      boot.style.transform = `translate(-50%, -50%) scale(${0.75 + blend * 0.25}) rotate(${ -6 + blend * 6 }deg)`;
+    }
+
+    const phones = [document.getElementById('phoneA'), document.getElementById('phoneB')];
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('in-view');
+      });
+    }, { threshold: 0.25 });
+
+    phones.forEach((p) => observer.observe(p));
+
+    window.addEventListener('scroll', updateHero, { passive: true });
+    window.addEventListener('resize', updateHero);
+    updateHero();
+
+    function fireConfetti() {
+      const colors = ['#ff4d6d', '#4d7cff', '#ffd43b', '#6ef0a8', '#b085ff'];
+      cannonLeft.style.opacity = '1';
+      cannonRight.style.opacity = '1';
+      for (let i = 0; i < 100; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        const fromLeft = i % 2 === 0;
+        const x0 = fromLeft ? 45 : window.innerWidth - 55;
+        const y0 = window.innerHeight * 0.28;
+        piece.style.left = x0 + 'px';
+        piece.style.top = y0 + 'px';
+        piece.style.opacity = '1';
+        document.body.appendChild(piece);
+        const drift = (Math.random() * 340 + 90) * (fromLeft ? 1 : -1);
+        const drop = Math.random() * 420 + 220;
+        const rot = (Math.random() * 720 - 360);
+        piece.animate([
+          { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+          { transform: `translate(${drift}px, ${drop}px) rotate(${rot}deg)`, opacity: 0.1 }
+        ], { duration: 1400 + Math.random()*1200, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = () => piece.remove();
+      }
+      setTimeout(() => { cannonLeft.style.opacity='0'; cannonRight.style.opacity='0'; }, 2200);
+    }
+
+    const winObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !confettiFired) {
+          confettiFired = true;
+          fireConfetti();
+        }
+      });
+    }, { threshold: 0.55 });
+    winObserver.observe(winSection);
+
+  </script>
+</body>
+</html>
